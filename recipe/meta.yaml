@@ -47,6 +47,7 @@ about:
   license: Apache-2.0
   summary: Implements synchronization between R processes (spawned by using the "parallel" package for instance) using file locks. Supports both exclusive and shared locking.
   license_family: APACHE
+  license_file: LICENSE-2.0.txt
 
 extra:
   recipe-maintainers:
