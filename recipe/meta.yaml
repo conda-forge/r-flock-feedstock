@@ -1,5 +1,4 @@
 {% set version = "0.7" %}
-
 {% set posix = 'm2-' if win else '' %}
 {% set native = 'm2w64-' if win else '' %}
 
@@ -8,34 +7,37 @@ package:
   version: {{ version|replace("-", "_") }}
 
 source:
-  fn: flock_{{ version }}.tar.gz
   url:
-    - https://cran.r-project.org/src/contrib/flock_{{ version }}.tar.gz
-    - https://cran.r-project.org/src/contrib/Archive/flock/flock_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/flock_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/flock/flock_{{ version }}.tar.gz
   sha256: 47ebdeaeeb63ec93c800782bafa7f2846f73bb905adb6a3b5c44b248ce1de9fd
 
 build:
   merge_build_host: true  # [win]
   number: 1003
-  skip: true  # [win32]
   rpaths:
     - lib/R/lib/
     - lib/
 
 requirements:
   build:
-    - posix                # [win]
-    - {{ compiler('c') }}        # [unix]
-    - {{ compiler('m2w64_c') }}  # [win]
-    - {{ compiler('cxx') }}        # [unix]
-    - {{ compiler('m2w64_cxx') }}  # [win]
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ compiler('cxx') }}            # [not win]
+    - {{ compiler('m2w64_cxx') }}      # [win]
+    - {{ posix }}filesystem        # [win]
+    - {{ posix }}make
+    - {{ posix }}sed               # [win]
+    - {{ posix }}coreutils         # [win]
+    - {{ posix }}zip               # [win]
+    - cross-r-base {{ r_base }}    # [build_platform != target_platform]
   host:
     - r-base
-    - r-rcpp
-
+    - r-rcpp >=0.11.3
   run:
     - r-base
-    - r-rcpp
+    - {{ native }}gcc-libs         # [win]
+    - r-rcpp >=0.11.3
 
 test:
   commands:
@@ -47,13 +49,9 @@ about:
   license: Apache-2.0
   summary: Implements synchronization between R processes (spawned by using the "parallel" package for instance) using file locks. Supports both exclusive and shared locking.
   license_family: APACHE
-  license_file: LICENSE-2.0.txt
+  license_file:
+    - LICENSE-2.0.txt
 
 extra:
   recipe-maintainers:
     - conda-forge/r
-    - johanneskoester
-    - bgruening
-    - daler
-    - jdblischak
-    - cbrueffer
