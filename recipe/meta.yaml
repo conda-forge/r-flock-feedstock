@@ -12,10 +12,14 @@ source:
   sha256: 47ebdeaeeb63ec93c800782bafa7f2846f73bb905adb6a3b5c44b248ce1de9fd
 
 build:
-  number: 1007
+  number: 1008
   rpaths:
     - lib/R/lib/
     - lib/
+  missing_dso_whitelist:
+    - '*/R.dll'        # [win]
+    - '*/Rblas.dll'    # [win]
+    - '*/Rlapack.dll'  # [win]
 
 requirements:
   build:
@@ -48,6 +52,7 @@ about:
   home: https://CRAN.R-project.org/package=flock
   license: Apache-2.0
   summary: Implements synchronization between R processes (spawned by using the "parallel" package for instance) using file locks. Supports both exclusive and shared locking.
+  license_family: APACHE
   license_file:
     - LICENSE-2.0.txt
 
